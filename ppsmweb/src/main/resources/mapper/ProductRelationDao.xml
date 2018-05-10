@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ppsm.mobile.dao.ProductRelationDao">
+
+    <select id="queryAll" resultType="ProductRelation">
+        SELECT id,product_name productName FROM ppsm_product_relation
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="java.lang.Integer">
+        INSERT INTO ppsm_product_relation(product_name) VALUES
+        <foreach collection="list" item="productRelation" index="index"
+                 separator=",">
+            (
+            #{productRelation.productName}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ppsm.mobile.dao.PpsmHtmlDao">
+
+    <select id="queryHtml" resultType="PpsmHtml">
+        SELECT id, html FROM ppsm_html
+    </select>
+
+    <insert id="insertHtml" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="java.lang.Integer">
+        INSERT INTO ppsm_html(html) VALUES( #{html} )
+    </insert>
+
+    <update id="updateHtmlById" parameterType="java.util.Map">
+        UPDATE ppsm_html SET html = #{html} WHERE id = #{id}
+    </update>
+
+</mapper>

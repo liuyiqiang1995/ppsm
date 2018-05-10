@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ppsm.mobile.dao.MobilePriceDao">
+
+    <resultMap type="com.ppsm.mobile.entity.MobilePrice" id="MobilePrice">
+        <id column="id" property="id"/>
+        <result column="product_id" property="productId"/>
+        <association property="mobileProduct"
+                    select="com.ppsm.mobile.dao.MobileProductDao.queryById"
+                    column="{id=id}" fetchType="eager">
+        </association>
+    </resultMap>
+    <select id="queryById" resultMap="MobilePrice" parameterType="java.lang.Integer">
+        SELECT id,product_id productId,price,time,date
+        FROM ppsm_mobile_price
+        WHERE id=#{id}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ppsm_mobile_price(product_id,price,time,date,ispublish) VALUES
+        <foreach collection="list" item="mobilePrice" index="index"
+                 separator=",">
+            (
+            #{mobilePrice.productId},#{mobilePrice.price},#{mobilePrice.time},#{mobilePrice.date},#{mobilePrice.ispublish}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateIspublish">
+      UPDATE ppsm_mobile_price SET ispublish=1 WHERE ispublish != 1
+    </update>
+
+    <delete id="deleteByDate" parameterType="java.util.Date">
+        DELETE FROM ppsm_mobile_price WHERE date = #{date}
+    </delete>
+
+
+    <resultMap type="com.ppsm.mobile.entity.MobilePrice" id="MobilePriceAll">
+        <id column="id" property="id"/>
+        <result column="price" property="price"/>
+        <result column="time" property="time"/>
+        <result column="date" property="date"/>
+        <association property="mobileProduct" javaType="com.ppsm.mobile.entity.MobileProduct">
+            <id column="id" property="id"/>
+            <result column="product_name" property="productName"/>
+            <result column="product_color" property="productColor"/>
+            <result column="product_country" property="productCountry"/>
+        </association>
+    </resultMap>
+    <select id="queryPriceAll" resultMap="MobilePriceAll">
+        SELECT r.id,d.product_name,d.product_color,d.product_country,r.price,r.time,r.date
+        FROM ppsm_mobile_price r,ppsm_mobile_product d
+        WHERE r.product_id = d.id AND r.ispublish = 0
+    </select>
+
+    <resultMap type="com.ppsm.mobile.entity.MobilePrice" id="MobilePriceByRootId">
+        <id column="id" property="id"/>
+        <result column="price" property="price"/>
+        <result column="time" property="time"/>
+        <association property="mobileProduct" javaType="com.ppsm.mobile.entity.MobileProduct">
+            <id column="id" property="id"/>
+            <result column="root_id" property="rootId"/>
+            <result column="product_name" property="productName"/>
+            <result column="product_color" property="productColor"/>
+            <result column="product_country" property="productCountry"/>
+        </association>
+    </resultMap>
+    <select id="queryPriceByRootId" resultMap="MobilePriceByRootId" parameterType="java.lang.String">
+        SELECT r.id,d.product_name,d.product_color,d.product_country,d.root_id,r.price,r.time
+        FROM ppsm_mobile_price r,ppsm_mobile_product d
+        WHERE r.product_id = d.id AND d.root_id = #{rootId} AND r.ispublish = 0
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ppsm.mobile.dao.MobileProductDao">
+    <!-- 目的：为dao接口方法提供sql语句配置 -->
+    <select id="queryById" resultType="MobileProduct" parameterType="java.lang.Integer">
+        SELECT id,root_id rootId,product_name productName,product_color productColor,product_country productCountry FROM ppsm_mobile_product WHERE id = #{id}
+    </select>
+
+    <select id="getIdByKey" resultType="MobileProduct">
+        SELECT id FROM ppsm_mobile_product WHERE product_name = #{productName} AND product_color=#{productColor} AND product_country=#{productCountry}
+    </select>
+
+    <select id="queryAll" resultType="MobileProduct">
+        SELECT id,root_id rootId,product_name productName,product_color productColor,product_country productCountry FROM ppsm_mobile_product
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="java.lang.Integer">
+        INSERT INTO ppsm_mobile_product(root_id,product_name,product_color,product_country) VALUES
+        <foreach collection="list" item="mobileProduct" index="index"
+                 separator=",">
+            (
+            #{mobileProduct.rootId},#{mobileProduct.productName},#{mobileProduct.productColor},#{mobileProduct.productCountry}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

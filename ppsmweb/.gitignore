@@ -1,0 +1,15 @@
+##ignore this file##
+/target/
+*.class
+*/.settings/
+# IntelliJ IDEA Project files
+.idea
+*.iml
+*/*.iml
+*.ipr
+*.iws
+out
+# Eclipse Project files
+.classpath
+.project
+.settings/
