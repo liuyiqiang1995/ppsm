@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -59,8 +60,9 @@ public class ScheduleServiceImpl {
      * @Author: LiuYiQiang
      * @Date: 22:36 2018/4/26
      */
-    @Scheduled(cron = "0 */3 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void updatePpsmPrice(){
+        String s = requestUrl();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         //如果Json有变化则更新数据库
@@ -71,6 +73,33 @@ public class ScheduleServiceImpl {
         }
         long timeSpend = Calendar.getInstance().getTimeInMillis() - calendar.getTimeInMillis();
         logger.info("胖胖数码批量服务执行完成,耗时{}毫秒", timeSpend);
+    }
+
+    private String requestUrl(){
+        String json = "";
+        StringBuilder jsonbuilder = new StringBuilder();
+        BufferedReader in = null;
+        try {
+            URL urlObject = new URL("https://price.ppsm.club/fu");
+            URLConnection uc = urlObject.openConnection();
+            in = new BufferedReader(new InputStreamReader(uc.getInputStream(), "UTF-8"));
+            String inputLine = null;
+            while ((inputLine = in.readLine()) != null) {
+                jsonbuilder.append(inputLine);
+            }
+        } catch (MalformedURLException e) {
+            logger.error("URL解析出错",e);
+        }catch (IOException e) {
+            logger.error(" ",e);
+        } finally {
+            try{
+                in.close();
+            }catch (IOException e) {
+                logger.error(" ",e);
+            }
+        }
+        json = jsonbuilder.toString();
+        return json;
     }
 
     /**

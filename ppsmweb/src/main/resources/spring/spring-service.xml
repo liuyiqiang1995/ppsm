@@ -41,4 +41,25 @@
     <task:scheduler id="scheduler" pool-size="10"></task:scheduler>
     <task:annotation-driven executor="executor" scheduler="scheduler"></task:annotation-driven>
 
+
+
+    <aop:config>
+        <aop:pointcut id="transactionMethods" expression="execution(* com.ppsm.mobile.service.*.*(..))" />
+        <aop:pointcut  id="jobApectPt" expression="execution(* com.ppsm.mobile.schedule.*.*(..))"/>
+        <aop:aspect ref="serviceInvokeAop" order="1">
+            <aop:before method="doBeforeInvoke" pointcut-ref="transactionMethods" />
+            <aop:after-returning method="doAfterReturn"
+                                 pointcut-ref="transactionMethods" />
+            <aop:after-throwing method="doAfterThrow"
+                                pointcut-ref="transactionMethods" throwing="ex" />
+        </aop:aspect>
+
+        <!--定时任务切面-->
+        <aop:aspect ref="jobCoreAspect" order="2">
+            <aop:before method="doBeforeInvoke" pointcut-ref="jobApectPt" />
+        </aop:aspect>
+
+    </aop:config>
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
 </beans>

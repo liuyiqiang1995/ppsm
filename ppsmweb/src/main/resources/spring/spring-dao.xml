@@ -6,11 +6,18 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.ppsm.mobile.*" />
+    <context:component-scan base-package="com.ppsm.mobile.dao" />
 
     <!-- 配置整合mybatis过程 -->
     <!-- 1.配置数据库相关参数properties的属性：${url} -->
-    <context:property-placeholder location="classpath:jdbc.properties" />
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- 2.数据库连接池 -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
